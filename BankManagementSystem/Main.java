@@ -9,6 +9,24 @@ public class Main {
         System.out.println("     BANK MANAGEMENT SYSTEM");
         System.out.println("================================");
 
+        SavingsAccount savings = new SavingsAccount(
+        "Siva",
+        1001,
+        5000
+        );
+
+        CurrentAccount current = new CurrentAccount(
+                "Madara",
+                1002,
+                10000
+        );
+
+savings.showAccountType();
+savings.checkbalance();
+
+current.showAccountType();
+current.checkbalance();
+
         Scanner scanner = new Scanner(System.in);
 
         // Store bank accounts using ArrayList
@@ -65,15 +83,41 @@ public class Main {
                     }
 
                     // Create new account
-                    BankAccount newAccount =
-                            new BankAccount(
-                                    customerName,
-                                    accountNumber,
-                                    balance
-                            );
+                    System.out.println();
+                    System.out.println("Select Account Type:");
+                    System.out.println("1. Savings Account");
+                    System.out.println("2. Current Account");
+                    System.out.print("Enter your choice: ");
 
-                    // Add account to ArrayList
-                    accounts.add(newAccount);
+                    int accountType = scanner.nextInt();
+
+                    BankAccount newAccount;
+
+                        if (accountType == 1) {
+
+                        newAccount = new SavingsAccount(
+                                customerName,
+                                accountNumber,
+                                balance
+                        );
+
+                        } else if (accountType == 2) {
+
+                        newAccount = new CurrentAccount(
+                                customerName,
+                                accountNumber,
+                                balance
+                        );
+
+                        } else {
+
+                        System.out.println("Invalid account type.");
+                        break;
+                        }
+
+                        accounts.add(newAccount);
+
+                System.out.println("Account created successfully!");
 
                     System.out.println(
                             "Account created successfully!"
@@ -209,6 +253,8 @@ public class Main {
                                             + currentAccount
                                                     .getBalance()
                                     );
+
+                                    currentAccount.showAccountType();
 
                                     break;
 
