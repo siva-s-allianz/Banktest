@@ -3,7 +3,7 @@ public class SavingsAccount extends BankAccount{
         super(customerName, accountNumber, balance);
     }
     @Override
-    void showAccountType(){
+    public void showAccountType(){
         System.out.println("Account Type : Savings Account");
     }
     
