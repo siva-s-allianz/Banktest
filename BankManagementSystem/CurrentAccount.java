@@ -4,7 +4,7 @@ public class CurrentAccount extends BankAccount {
     }
 
     @Override
-    void showAccountType(){
+    public void showAccountType(){
         System.out.println("Account Type : Current Account");
     }
     

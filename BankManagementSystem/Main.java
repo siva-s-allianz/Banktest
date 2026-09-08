@@ -9,24 +9,6 @@ public class Main {
         System.out.println("     BANK MANAGEMENT SYSTEM");
         System.out.println("================================");
 
-        SavingsAccount savings = new SavingsAccount(
-        "Siva",
-        1001,
-        5000
-        );
-
-        CurrentAccount current = new CurrentAccount(
-                "Madara",
-                1002,
-                10000
-        );
-
-savings.showAccountType();
-savings.checkbalance();
-
-current.showAccountType();
-current.checkbalance();
-
         Scanner scanner = new Scanner(System.in);
 
         // Store bank accounts using ArrayList
@@ -118,10 +100,6 @@ current.checkbalance();
                         accounts.add(newAccount);
 
                 System.out.println("Account created successfully!");
-
-                    System.out.println(
-                            "Account created successfully!"
-                    );
 
                     break;
 
@@ -236,6 +214,8 @@ current.checkbalance();
 
                                 case 4:
 
+                                    currentAccount.showAccountType();
+
                                     System.out.println(
                                             "Customer Name: "
                                             + currentAccount
@@ -254,7 +234,7 @@ current.checkbalance();
                                                     .getBalance()
                                     );
 
-                                    currentAccount.showAccountType();
+                                    
 
                                     break;
 

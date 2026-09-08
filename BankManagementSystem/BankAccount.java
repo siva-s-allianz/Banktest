@@ -1,4 +1,4 @@
-public class BankAccount {
+public abstract class BankAccount implements Transaction {
 
     private String customerName;
     private int accountNumber;
@@ -22,7 +22,8 @@ public class BankAccount {
         this.balance = balance;
     }
 
-    void deposit(double amount) {
+    @Override
+    public void deposit(double amount) {
 
         if (amount <= 0) {
             System.out.println("Deposit amount must be greater than 0.");
@@ -34,8 +35,9 @@ public class BankAccount {
         System.out.println("Deposited: " + amount);
         System.out.println("New Balance: " + balance);
    }
-
-    void withdraw(double amount) {
+    
+    @Override
+    public void withdraw(double amount) {
 
         if (amount <= 0) {
             System.out.println("Withdrawal amount must be greater than 0.");
@@ -53,13 +55,11 @@ public class BankAccount {
         System.out.println("₹" + amount + " withdrawn successfully.");
         System.out.println("Current Balance: " + balance);
     }
-
-    void checkbalance(){
+    
+    @Override
+    public void checkbalance(){
         System.out.println("Current Balance: " + balance);
     }
 
-    void showAccountType(){
-        System.out.println("Account Type : Bank Account");
-    }
-
+    public abstract void showAccountType();
 }
