@@ -1,5 +1,13 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.function.Predicate;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Main {
 
@@ -16,18 +24,25 @@ public class Main {
 
         int choice = 0;
 
-        while (choice != 3) {
+        while (choice != 4) {
 
             System.out.println();
             System.out.println("========== MAIN MENU ==========");
             System.out.println("1. Create Account");
             System.out.println("2. Login");
-            System.out.println("3. Exit");
+            System.out.println("3. Account Reports");
+            System.out.println("4. Exit");
 
             System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
-            scanner.nextLine();
 
+            try{
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            }
+            catch(InputMismatchException e){
+                System.out.println("Please enter a valid number.");
+                scanner.nextLine();
+            }
             switch (choice) {
 
                 // =========================
@@ -178,7 +193,10 @@ public class Main {
 
                                 case 1:
 
-                                    currentAccount.checkbalance();
+                                    performOperation(
+                                        currentAccount,
+                                        Main::printAccountBalance
+                                );
 
                                     break;
 
@@ -205,35 +223,43 @@ public class Main {
 
                                     double withdrawalAmount =
                                             scanner.nextDouble();
-
+                                    try{
                                     currentAccount.withdraw(
                                             withdrawalAmount
-                                    );
+                                    );}
+                                    catch(InsufficientBalanceException e){
+                                        System.out.println(e.getMessage());
+                                    }
 
                                     break;
 
                                 case 4:
 
-                                    currentAccount.showAccountType();
+                                    System.out.println(
+                                            "-----Account Details-----"
+                                    );
+                                    performOperation(currentAccount,account -> {
 
                                     System.out.println(
                                             "Customer Name: "
-                                            + currentAccount
+                                            + account
                                                     .getCustomerName()
                                     );
 
                                     System.out.println(
                                             "Account Number: "
-                                            + currentAccount
+                                            + account
                                                     .getAccountNumber()
                                     );
 
                                     System.out.println(
                                             "Balance: "
-                                            + currentAccount
+                                            + account
                                                     .getBalance()
                                     );
-
+                                   
+                                });
+                                 currentAccount.showAccountType();
                                     
 
                                     break;
@@ -258,9 +284,107 @@ public class Main {
                     break;
 
                 // =========================
+                // ACCOUNT REPORTS
+                // =========================
+
+                case 3:
+                        System.out.println();
+                        System.out.println("========== ACCOUNT REPORTS ==========");
+                        System.out.println("1. Show All Accounts");
+                        System.out.println("2. Show Accounts with balance above 5000");
+                        System.out.println("3. Sort Accounts by Balance");
+                        System.out.println("4. Count Total Accounts");
+                        System.out.println("5. Group Accounts By Type");
+
+                        System.out.print("Enter your choice: ");
+                        int reportChoice = scanner.nextInt();
+
+                        switch (reportChoice) {
+                                case 1:
+                                        System.out.println("-----All Accounts-----");
+                                        
+
+                                        performOperationOnAll(accounts, account -> System.out.println(account.getCustomerName()+
+                                        '-'+account.getBalance()));
+
+                                        if (!accounts.isEmpty()) {
+                                                showAccountName(
+                                                        accounts.get(0),
+                                                        account -> account.getCustomerName()
+                                                );
+                                        }
+                                        break;
+                                
+                                case 2:
+                                        System.out.println("-----Accounts with balance above 5000-----");
+                                        filterAccounts(accounts,account -> account.getBalance()>5000);
+
+                                        break;
+
+                                case 3:
+                                        System.out.println("-----Accounts sorted by balance-----");
+
+                                        List<BankAccount> sortedAccounts =
+                                                accounts.stream()
+                                                        .sorted(
+                                                                Comparator.comparingDouble(
+                                                                        BankAccount::getBalance
+                                                                )
+                                                        )
+                                                        .collect(Collectors.toList());
+                                        
+                                        sortedAccounts.forEach(account ->
+                                                System.out.println(
+                                                        account.getCustomerName()+
+                                                        '-'+
+                                                        account.getBalance()
+                                                ));
+
+                                        
+                                        break;
+
+                                case 4:
+
+                                        long totalAccounts = accounts.stream().count();
+
+                                        System.out.println("Total Accounts: "+ totalAccounts);
+
+                                        break;
+
+                                case 5 :
+                                        Map<String,List<BankAccount>> accountsByType = 
+                                                accounts.stream()
+                                                        .collect(Collectors.groupingBy(
+                                                                account -> account.getClass().getSimpleName()
+                                                        ));
+                                        System.out.println();
+                                        System.out.println("-----Accounts grouped by type-----");
+
+                                        accountsByType.forEach((type,accountList)->{
+                                                System.out.println();
+                                                System.out.println("Account Type: "+type + ":");
+
+                                                accountList.forEach(account ->
+                                                        System.out.println(
+                                                                account.getCustomerName()+
+                                                                '-'+
+                                                                account.getBalance()
+                                                        )
+                                                );
+                                        });
+                                        break;
+                                                
+
+                                default:
+                                        System.out.println("Invalid report choice. Please try again.");
+                                        break;
+                        }
+
+
+                // =========================
                 // EXIT
                 // =========================
-                case 3:
+                case 4:
 
                     System.out.println(
                             "Thank you for using the banking system."
@@ -297,4 +421,49 @@ public class Main {
 
         return null;
     }
+
+    static void  performOperation(BankAccount account , AccountOperation operation){
+        operation.perform(account);
+    }
+
+    static void performOperationOnAll(
+        ArrayList<BankAccount> accounts,
+        Consumer<BankAccount> operation
+    ){
+        for(BankAccount account : accounts){
+                operation.accept(account);
+        }
+    }
+
+    static void filterAccounts(
+        ArrayList<BankAccount> accounts,
+        Predicate<BankAccount> filter){
+                for(BankAccount account : accounts){
+                        if(filter.test(account)){
+                                System.out.println(
+                                        account.getCustomerName()+
+                                        '-'+
+                                        account.getBalance()
+                                );
+                        }
+                }
+        }
+
+    static void showAccountName(
+                BankAccount account,
+                Function<BankAccount, String> function
+        ) {
+        String result = function.apply(account);
+        System.out.println("Result: " + result);
+        }
+
+    static void printAccountBalance(BankAccount account){
+        System.out.println(
+                "Balance : "+account.getBalance()
+        );
+    }
+
+
 }
+
+
