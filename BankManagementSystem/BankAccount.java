@@ -45,9 +45,8 @@ public abstract class BankAccount implements Transaction {
         }
 
         if (amount > balance) {
-            System.out.println("Insufficient balance.");
-            System.out.println("Current Balance: " + balance);
-            return;
+            throw new InsufficientBalanceException("Insufficient balance for withdrawal. Current balance: " + balance);
+         
         }
 
         balance = balance - amount;
