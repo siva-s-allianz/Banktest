@@ -4,18 +4,22 @@ public abstract class BankAccount implements Transaction {
     private int accountNumber;
     private double balance;
 
+    /** Returns the name of the customer who owns this account. */
     public String getCustomerName(){
         return customerName;
     }
 
+    /** Returns the unique number assigned to this account. */
     public int getAccountNumber(){
         return accountNumber;
     }
 
+    /** Returns the account's current balance. */
     public double getBalance(){
         return balance;
     }
 
+    /** Creates a bank account with the supplied customer and opening details. */
     public BankAccount(String customerName, int accountNumber, double balance){
         this.customerName = customerName;
         this.accountNumber = accountNumber;
@@ -23,6 +27,7 @@ public abstract class BankAccount implements Transaction {
     }
 
     @Override
+    /** Adds a positive amount to the account balance. */
     public void deposit(double amount) {
 
         if (amount <= 0) {
@@ -37,6 +42,7 @@ public abstract class BankAccount implements Transaction {
    }
     
     @Override
+    /** Removes a positive amount when sufficient funds are available. */
     public void withdraw(double amount) {
 
         if (amount <= 0) {
@@ -56,9 +62,11 @@ public abstract class BankAccount implements Transaction {
     }
     
     @Override
+    /** Prints the account's current balance. */
     public void checkbalance(){
         System.out.println("Current Balance: " + balance);
     }
 
+    /** Prints the concrete type of this account. */
     public abstract void showAccountType();
 }
