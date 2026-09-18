@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 public class Main {
 
@@ -23,8 +24,6 @@ public class Main {
         System.out.println("================================");
         System.out.println("     BANK MANAGEMENT SYSTEM");
         System.out.println("================================");
-
-        testBankAccountMap();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -41,7 +40,6 @@ public class Main {
             System.out.println("2. Login");
             System.out.println("3. Account Reports");
             System.out.println("4. Exit");
-
             System.out.print("Enter your choice: ");
 
             try{
@@ -53,7 +51,6 @@ public class Main {
                 scanner.nextLine();
             }
             switch (choice) {
-
                 // =========================
                 // CREATE ACCOUNT
                 // =========================
@@ -86,7 +83,6 @@ public class Main {
 
                         break;
                     }
-
                     // Create new account
                     System.out.println();
                     System.out.println("Select Account Type:");
@@ -125,12 +121,10 @@ public class Main {
                 System.out.println("Account created successfully!");
 
                     break;
-
                 // =========================
                 // LOGIN
                 // =========================
                 case 2:
-
                     System.out.print(
                             "Enter account number to login: "
                     );
@@ -155,15 +149,13 @@ public class Main {
                                         "Welcome, "
                                         + currentAccount.getCustomerName()
                                         + "!"
-                                );
-                                
+                                );   
 
                         int bankingChoice = 0;
-
                         // =========================
                         // BANKING MENU
                         // =========================
-                        while (bankingChoice != 5) {
+                        while (bankingChoice != 9) {
 
                             System.out.println();
                             System.out.println(
@@ -187,7 +179,16 @@ public class Main {
                             );
 
                             System.out.println(
-                                    "5. Logout"
+                                "5. Transaction History"
+                            );
+                            System.out.println(
+                                    "6. Undo Last Transaction"
+                            );
+                            System.out.println("7. Pending Transactions");
+                            System.out.println("8. Process Next Transaction");
+
+                            System.out.println(
+                                    "9. Logout"
                             );
 
                             System.out.print(
@@ -200,27 +201,22 @@ public class Main {
                             switch (bankingChoice) {
 
                                 case 1:
-
                                     performOperation(
                                         currentAccount,
                                         Main::printAccountBalance
                                 );
 
                                     break;
-
                                 case 2:
-
                                     System.out.print(
                                             "Enter the amount to deposit: "
                                     );
 
                                     double depositAmount =
                                             scanner.nextDouble();
-
                                     currentAccount.deposit(
                                             depositAmount
                                     );
-
                                     break;
 
                                 case 3:
@@ -271,8 +267,25 @@ public class Main {
                                     
 
                                     break;
-
+                                
                                 case 5:
+                                        System.out.println("-----Transaction History-----");
+                                        currentAccount.showTransactionHistory();
+                                        break;
+                                
+                                case 6:
+                                        currentAccount.undoLastTransaction();
+                                        break;        
+
+                                case 7:
+                                        currentAccount.showPendingTransactions();
+                                        break;
+
+                                case 8:
+                                        currentAccount.processNextTransaction();
+                                        break;
+
+                                case 9:
 
                                     System.out.println(
                                             "Logged out successfully."
@@ -294,11 +307,9 @@ public class Main {
                 }
 
                     break;
-                
                 // =========================
                 // ACCOUNT REPORTS
                 // =========================
-
                 case 3:
                         System.out.println();
                         System.out.println("========== ACCOUNT REPORTS ==========");
@@ -309,6 +320,11 @@ public class Main {
                         System.out.println("5. Group Accounts By Type");
                         System.out.println("6. Show Customer Names");
                         System.out.println("7. High Balance Customer Names");
+                        System.out.println("8. Show sorted Customer Names");
+                        System.out.println("9. Show Total Balance of All Accounts");
+                        System.out.println("10. Show Highest Balance");
+                        System.out.println("12. Sort Accounts by Account Number");
+                        System.out.println("13. Binary Search Account");
 
                         System.out.print("Enter your choice: ");
                         int reportChoice = scanner.nextInt();
@@ -422,13 +438,69 @@ public class Main {
                                         );
 
                                         break;
+                                case 8:
+                                        showSortedCustomerNames(accounts);
+                                        break;
+                                
+                                case 9:
+                                        showTotalBalance(accounts);
+                                        break;
+
+                                case 10:
+                                        showHighestBalance(accounts);
+                                        break;
+
+                                case 12:
+
+                                        bubbleSortAccounts(accounts);
+
+                                        System.out.println("Accounts sorted by account number.");
+
+                                        for (BankAccount account : accounts) {
+                                                System.out.println(
+                                                        account.getAccountNumber()
+                                                        + " - "
+                                                        + account.getCustomerName()
+                                                );
+                                        }
+                                        break;
+
+                                     case 13:
+                                        bubbleSortAccounts(accounts);
+
+                                        System.out.print("Enter account number to search: ");
+                                        int searchNumber = scanner.nextInt();
+
+                                        BankAccount foundAccount =
+                                                binarySearch(accounts, searchNumber);
+
+                                        if (foundAccount != null) {
+
+                                                System.out.println("Account found!");
+                                                System.out.println(
+                                                        "Customer Name: "
+                                                        + foundAccount.getCustomerName()
+                                                );
+
+                                                System.out.println(
+                                                        "Account Number: "
+                                                        + foundAccount.getAccountNumber()
+                                                );
+
+                                                System.out.println(
+                                                        "Balance: "
+                                                        + foundAccount.getBalance()
+                                                );
+                                        } else {
+                                                System.out.println("Account not found.");
+                                                }
+                                        break;   
+
 
                                 default:
                                         System.out.println("Invalid report choice. Please try again.");
                                         break;
                         }
-
-
                 // =========================
                 // EXIT
                 // =========================
@@ -515,48 +587,8 @@ public class Main {
                 String bankName = supplier.get();
 
                 System.out.println("Bank Name: " + bankName);
-    }
-
-        /** Prints a formatted report when an account meets a condition. */
-        static void accountReport(
-        BankAccount account,
-        Predicate<BankAccount> condition,
-        Function<BankAccount, String> formatter,
-        Consumer<String> printer,
-        Supplier<String> title
-    ){
-        System.out.println(title.get());
-
-        if(condition.test(account)){
-                String result = formatter.apply(account);
-
-                printer.accept(result);
-
-        }else{
-                System.out.println("Account does not meet the condition.");
         }
-    }
 
-
-        /** Demonstrates optional handling for a possibly missing account. */
-        static void checkOptionalAccount(BankAccount account) {
-
-                Optional<BankAccount> optionalAccount =
-                        Optional.ofNullable(account);
-
-                BankAccount result =
-                        optionalAccount.orElseGet(() -> {
-                                System.out.println("No account found.");
-                                return null;
-                        });
-
-                if (result != null) {
-                        System.out.println(
-                                "Account found: "
-                                + result.getCustomerName()
-                        );
-                }
-        }
 
         /** Prints each distinct customer name in the account collection. */
         static void showUniqueCustomerNames(
@@ -581,103 +613,91 @@ public class Main {
                 "Balance : "+account.getBalance()
         );
     }
-        /** Demonstrates basic key and value operations on a customer map. */
-        static void testHashMap() {
 
-        HashMap<Integer, String> customers = new HashMap<>();
+        static void showSortedCustomerNames(ArrayList<BankAccount> accounts) {
 
-        customers.put(1001, "Itachi");
-        customers.put(1002, "Siva");
-        customers.put(1003, "Ravi");
+                TreeSet<String> sortedNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
-        System.out.println("-----Customer Map-----");
+                for (BankAccount account : accounts) {
+                        sortedNames.add(account.getCustomerName());
+                }
 
-        System.out.println("1001: " + customers.get(1001));
-        System.out.println("1002: " + customers.get(1002));
-        System.out.println("1003: " + customers.get(1003));
+                System.out.println("-----Unique Customer Names (Sorted)-----");
 
-        System.out.println(
-                "Does account 1001 exist? "
-                + customers.containsKey(1001)
-        );
-
-        System.out.println(
-                "Does account 9999 exist? "
-                + customers.containsKey(9999)
-        );
-
-        System.out.println(
-                "Does customer Itachi exist? "
-                + customers.containsValue("Itachi")
-        );
-     }
-
-        /** Demonstrates storing and retrieving bank accounts in a map. */
-        static void testBankAccountMap() {
-
-                HashMap<Integer, BankAccount> accountMap =
-                        new HashMap<>();
-
-                BankAccount account1 =
-                        new SavingsAccount("Itachi", 1001, 85200);
-
-                BankAccount account2 =
-                        new CurrentAccount("Siva", 1002, 50000);
-
-                accountMap.put(
-                        account1.getAccountNumber(),
-                        account1
-                );
-
-                accountMap.put(
-                        account2.getAccountNumber(),
-                        account2
-                );
-
-                BankAccount account =
-                        accountMap.get(1001);
-
-                System.out.println("-----Bank Account Map-----");
-
-                System.out.println(
-                        "Customer: "
-                        + account.getCustomerName()
-                );
-
-                System.out.println(
-                        "Account Number: "
-                        + account.getAccountNumber()
-                );
-
-                System.out.println(
-                        "Balance: "
-                        + account.getBalance()
-                );
-
-                System.out.println("-----All Accounts in Map-----");
-
-                for (Map.Entry<Integer, BankAccount> entry :
-                        accountMap.entrySet()) {
-
-                        System.out.println(
-                                "Account Number: "
-                                + entry.getKey()
-                        );
-
-                        System.out.println(
-                                "Customer Name: "
-                                + entry.getValue().getCustomerName()
-                        );
-
-                        System.out.println(
-                                "Balance: "
-                                + entry.getValue().getBalance()
-                        );
-
-                        System.out.println();
+                for (String name : sortedNames) {
+                        System.out.println(name);
                 }
         }
 
+        static void showTotalBalance(ArrayList<BankAccount> accounts) {
+
+        double totalBalance = accounts.stream()
+                .map(BankAccount::getBalance)
+                .reduce(0.0, (sum, balance) -> sum + balance);
+
+        System.out.println("Total balance of all accounts: " + totalBalance);
+        }
+
+        static void showHighestBalance(ArrayList<BankAccount> accounts) {
+
+                if (accounts.isEmpty()) {
+                        System.out.println("No accounts available.");
+                        return;
+                }
+
+                double highestBalance = accounts.stream()
+                        .map(BankAccount::getBalance)
+                        .reduce(0.0, (highest, balance) ->
+                                Math.max(highest, balance));
+
+                System.out.println("Highest balance: " + highestBalance);
+        }
+
+        public static void bubbleSortAccounts(
+                ArrayList<BankAccount> accounts) {
+
+                for (int i = 0; i < accounts.size() - 1; i++) {
+
+                        for (int j = 0; j < accounts.size() - 1 - i; j++) {
+
+                        if (accounts.get(j).getAccountNumber()
+                                > accounts.get(j + 1).getAccountNumber()) {
+
+                                BankAccount temp = accounts.get(j);
+
+                                accounts.set(j, accounts.get(j + 1));
+
+                                accounts.set(j + 1, temp);
+                        }
+                        }
+                }
+        }
+
+        public static BankAccount binarySearch(
+                ArrayList<BankAccount> accounts,
+                int accountNumber) {
+
+        int left = 0;
+        int right = accounts.size() - 1;
+
+        while (left <= right) {
+
+                int middle = (left + right) / 2;
+
+                int middleAccountNumber =
+                        accounts.get(middle).getAccountNumber();
+
+                if (middleAccountNumber == accountNumber) {
+                return accounts.get(middle);
+                }
+
+                if (middleAccountNumber < accountNumber) {
+                left = middle + 1;
+                } else {
+                right = middle - 1;
+                }
+        }
+
+        return null;
+        }
 }
-
-

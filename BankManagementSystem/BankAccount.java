@@ -1,3 +1,6 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public abstract class BankAccount implements Transaction {
 
     private String customerName;
@@ -36,6 +39,11 @@ public abstract class BankAccount implements Transaction {
         }
 
         balance = balance + amount;
+            BankTransaction transaction =
+            new BankTransaction("Deposit", amount);
+            transactions.add(transaction);
+            transactionStack.push(transaction);
+            transactionQueue.offer(transaction);
 
         System.out.println("Deposited: " + amount);
         System.out.println("New Balance: " + balance);
@@ -56,7 +64,11 @@ public abstract class BankAccount implements Transaction {
         }
 
         balance = balance - amount;
-
+        BankTransaction transaction =
+        new BankTransaction("Withdraw", amount);
+        transactions.add(transaction);
+        transactionStack.push(transaction);
+        transactionQueue.offer(transaction);
         System.out.println("₹" + amount + " withdrawn successfully.");
         System.out.println("Current Balance: " + balance);
     }
@@ -69,4 +81,68 @@ public abstract class BankAccount implements Transaction {
 
     /** Prints the concrete type of this account. */
     public abstract void showAccountType();
+
+    public void showTransactionHistory(){
+        transactions.display();
+    }
+
+    private TransactionLinkedList transactions = new TransactionLinkedList();
+
+    private Deque<BankTransaction> transactionStack = new ArrayDeque<>();
+
+    private Deque<BankTransaction> transactionQueue = new ArrayDeque<>();
+
+    public void undoLastTransaction() {
+
+    if (transactionStack.isEmpty()) {
+        System.out.println("No transaction to undo.");
+        return;
+    }
+
+    BankTransaction transaction = transactionStack.pop();
+    removeFromQueue(transaction);
+
+        if (transaction.getType().equalsIgnoreCase("Deposit")) {
+
+            balance = balance - transaction.getAmount();
+
+        } else if (transaction.getType().equalsIgnoreCase("Withdraw")) {
+
+            balance = balance + transaction.getAmount();
+        }
+
+        System.out.println("Last transaction undone.");
+        System.out.println("Current Balance: " + balance);
+    }
+    public void showPendingTransactions() {
+
+        if (transactionQueue.isEmpty()) {
+            System.out.println("No pending transactions.");
+            return;
+        }
+
+        System.out.println("-----Pending Transactions-----");
+
+        for (BankTransaction transaction : transactionQueue) {
+            System.out.println(transaction);
+        }
+    }
+
+    public void processNextTransaction() {
+
+        if (transactionQueue.isEmpty()) {
+            System.out.println("No pending transactions.");
+            return;
+        }
+
+        BankTransaction transaction = transactionQueue.poll();
+
+        System.out.println("Processing transaction:");
+        System.out.println(transaction);
+    }
+
+    private void removeFromQueue(BankTransaction transaction) {
+
+        transactionQueue.remove(transaction);
+    }
 }
