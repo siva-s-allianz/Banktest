@@ -1,3 +1,5 @@
+package BankManagementSystem;
+
 public class SavingsAccount extends BankAccount{
     /** Creates a savings account with the supplied customer and opening details. */
     public SavingsAccount(String customerName, int accountNumber, double balance){

@@ -1,3 +1,4 @@
+package BankManagementSystem;
 @FunctionalInterface 
 public interface AccountFilter {
     /** Tests whether the supplied bank account matches a condition. */

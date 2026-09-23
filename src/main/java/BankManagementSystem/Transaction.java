@@ -1,3 +1,5 @@
+package BankManagementSystem;
+
 public interface Transaction {
     /** Deposits the supplied amount into an account. */
     void deposit(double amount);

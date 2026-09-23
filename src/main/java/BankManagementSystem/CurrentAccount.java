@@ -1,3 +1,5 @@
+package BankManagementSystem;
+
 public class CurrentAccount extends BankAccount {
     /** Creates a current account with the supplied customer and opening details. */
     public CurrentAccount(String customerName, int accountNumber, double balance){

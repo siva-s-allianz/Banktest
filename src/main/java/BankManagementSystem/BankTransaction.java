@@ -1,3 +1,5 @@
+package BankManagementSystem;
+
 public class BankTransaction {
     private String type;
     private double amount;
