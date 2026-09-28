@@ -85,4 +85,42 @@ public class BankAccountIntegrationTest {
         assertFalse(deleted);
         assertTrue(transactions.search("Deposit"));
     }
+
+    @Test
+    void testDeleteFromEmptyList() {        
+
+    TransactionLinkedList transactions =
+            new TransactionLinkedList();
+
+    boolean deleted = transactions.delete("Deposit");
+
+    assertFalse(deleted);
+   }
+
+   @Test
+        void testDisplayTransactions() {
+        TransactionLinkedList transactions =
+                new TransactionLinkedList();
+
+        BankTransaction deposit =
+                new BankTransaction("Deposit", 2000);
+
+        BankTransaction withdrawal =
+                new BankTransaction("Withdrawal", 1000);
+
+        transactions.add(deposit);
+        transactions.add(withdrawal);
+
+        transactions.display();
+        }       
+
+        @Test
+        void testSearchEmptyList() {
+        TransactionLinkedList transactions =
+                new TransactionLinkedList();
+
+        boolean found = transactions.search("Deposit");
+
+        assertFalse(found);
+        }
 }
