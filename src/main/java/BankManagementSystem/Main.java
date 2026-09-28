@@ -1,3 +1,5 @@
+package BankManagementSystem;
+
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -51,6 +53,7 @@ public class Main {
             catch(InputMismatchException e){
                 System.out.println("Please enter a valid number.");
                 scanner.nextLine();
+                continue;
             }
             switch (choice) {
                 // =========================
@@ -58,71 +61,81 @@ public class Main {
                 // =========================
                 case 1:
 
-                    System.out.print("Enter customer name: ");
-                    String customerName = scanner.nextLine();
+                        try {
+                                System.out.print("Enter customer name: ");
+                                String customerName = scanner.nextLine();
 
-                    System.out.print("Enter account number: ");
-                    int accountNumber = scanner.nextInt();
+                                System.out.print("Enter account number: ");
+                                int accountNumber = scanner.nextInt();
 
-                    // Check duplicate account number
-                if (findAccount(accounts, accountNumber).isPresent()) {
-                        System.out.println(
-                                "Account number already exists."
-                        );
+                                // Check duplicate account number
+                                if (findAccount(accounts, accountNumber).isPresent()) {
+                                System.out.println("Account number already exists.");
+                                break;
+                                }
 
-                        break;
-                    }
+                                System.out.print("Enter initial deposit: ");
+                                double balance = scanner.nextDouble();
 
-                    System.out.print("Enter initial deposit: ");
-                    double balance = scanner.nextDouble();
+                                // Validate initial deposit
+                                if (balance <= 0) {
+                                System.out.println(
+                                        "Initial deposit must be greater than 0."
+                                );
+                                break;
+                                }
 
-                    // Validate initial deposit
-                    if (balance <= 0) {
+                                System.out.println();
+                                System.out.println("Select Account Type:");
+                                System.out.println("1. Savings Account");
+                                System.out.println("2. Current Account");
+                                System.out.print("Enter your choice: ");
 
-                        System.out.println(
-                                "Initial deposit must be greater than 0."
-                        );
+                                int accountType = scanner.nextInt();
 
-                        break;
-                    }
-                    // Create new account
-                    System.out.println();
-                    System.out.println("Select Account Type:");
-                    System.out.println("1. Savings Account");
-                    System.out.println("2. Current Account");
-                    System.out.print("Enter your choice: ");
+                                BankAccount newAccount;
 
-                    int accountType = scanner.nextInt();
+                                if (accountType == 1) {
 
-                    BankAccount newAccount;
+                                newAccount = new SavingsAccount(
+                                        customerName,
+                                        accountNumber,
+                                        balance
+                                );
 
-                        if (accountType == 1) {
+                                } else if (accountType == 2) {
 
-                        newAccount = new SavingsAccount(
-                                customerName,
-                                accountNumber,
-                                balance
-                        );
+                                newAccount = new CurrentAccount(
+                                        customerName,
+                                        accountNumber,
+                                        balance
+                                );
 
-                        } else if (accountType == 2) {
+                                } else {
 
-                        newAccount = new CurrentAccount(
-                                customerName,
-                                accountNumber,
-                                balance
-                        );
+                                System.out.println("Invalid account type.");
+                                break;
+                                }
 
-                        } else {
+                                accounts.add(newAccount);
 
-                        System.out.println("Invalid account type.");
-                        break;
+                                System.out.println("Account created successfully!");
+
+                        } catch (InputMismatchException e) {
+
+                                System.out.println(
+                                        "Invalid input. Please enter the correct type of value."
+                                );
+
+                                scanner.nextLine();
+
+                        } finally {
+
+                                System.out.println("Create Account operation completed.");
+
                         }
 
-                        accounts.add(newAccount);
-
-                System.out.println("Account created successfully!");
-
-                    break;
+                        break;
                 // =========================
                 // LOGIN
                 // =========================
