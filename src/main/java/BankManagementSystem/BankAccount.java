@@ -2,6 +2,7 @@ package BankManagementSystem;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Stack;
 
 public abstract class BankAccount implements Transaction {
 
@@ -90,7 +91,7 @@ public abstract class BankAccount implements Transaction {
 
     private TransactionLinkedList transactions = new TransactionLinkedList();
 
-    private Deque<BankTransaction> transactionStack = new ArrayDeque<>();
+    private Stack<BankTransaction> transactionStack = new Stack<>();
 
     private Deque<BankTransaction> transactionQueue = new ArrayDeque<>();
 
