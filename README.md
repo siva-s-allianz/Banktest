@@ -13,7 +13,7 @@ A basic console-based bank management system written in Java.
 
 ## Requirements
 
-- Java Development Kit (JDK) 8 or later
+- Java Development Kit (JDK) 25 or later
 
 ## Run the Application
 
